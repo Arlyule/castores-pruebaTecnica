@@ -14,7 +14,7 @@ public class Inventario {
 
     private Integer cantidad;
 
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date fechaRegistro;
 
     private Boolean tipoMovimiento;
