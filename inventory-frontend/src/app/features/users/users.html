@@ -1,0 +1,144 @@
+<div class="users-container">
+  <div class="header-actions">
+    <h2 class="title">Gestión de Usuarios</h2>
+  </div>
+
+  <div class="action-bar" style="margin-bottom: 20px !important;">
+    <button 
+      *ngIf="authService.hasRole('ADMINISTRADOR')" 
+      (click)="openAddModal()" 
+      class="btn btn-primary">
+      + Registrar Usuario
+    </button>
+  </div>
+
+  <div class="table-container glass-card mt-4">
+    <div *ngIf="isLoading" class="loading-state">Cargando usuarios...</div>
+    
+    <table *ngIf="!isLoading">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Correo</th>
+          <th>Rol</th>
+          <th>Estado</th>
+          <th *ngIf="authService.hasRole('ADMINISTRADOR')">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let u of users">
+          <td>{{ u.idUsuario }}</td>
+          <td><strong>{{ u.nombre }}</strong></td>
+          <td>{{ u.correo }}</td>
+          <td>
+            <span class="badge" [ngClass]="u.rol?.nombre === 'ADMINISTRADOR' ? 'badge-danger' : 'badge-success'">
+              {{ u.rol?.nombre || 'Sin Rol' }}
+            </span>
+          </td>
+          <td>
+            <span class="badge" [ngClass]="u.estatus ? 'badge-success' : 'badge-danger'">
+              {{ u.estatus ? 'Activo' : 'Inactivo' }}
+            </span>
+          </td>
+          <td *ngIf="authService.hasRole('ADMINISTRADOR')">
+            <button (click)="openEditModal(u)" class="btn btn-sm btn-secondary">Editar</button>
+          </td>
+        </tr>
+        <tr *ngIf="users.length === 0">
+          <td colspan="6" class="text-center">No hay usuarios registrados.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal Registrar Usuario -->
+<div class="modal-backdrop" *ngIf="showAddForm">
+  <div class="modal-content glass-card">
+    <button class="close-btn" (click)="showAddForm = false">&times;</button>
+    <h3>Registrar Usuario</h3>
+    
+    <form [formGroup]="userForm" (ngSubmit)="onAddSubmit()">
+      <div class="input-group">
+        <label>Nombre</label>
+        <input type="text" formControlName="nombre" placeholder="Nombre completo">
+      </div>
+
+      <div class="input-group">
+        <label>Correo</label>
+        <input type="email" formControlName="correo" placeholder="correo@ejemplo.com">
+      </div>
+
+      <div class="input-group">
+        <label>Contraseña</label>
+        <input type="password" formControlName="contrasena" placeholder="Mínimo 8 caracteres, 1 mayúscula, 1 minúscula, 1 número">
+        <small class="text-muted" *ngIf="userForm.get('contrasena')?.hasError('pattern')">
+          La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número.
+        </small>
+      </div>
+
+      <div class="input-group" formGroupName="rol">
+        <label>Rol</label>
+        <select formControlName="idRol">
+          <option [value]="1">ADMINISTRADOR</option>
+          <option [value]="2">ALMACEN</option>
+        </select>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn btn-secondary" (click)="showAddForm = false">Cancelar</button>
+        <button type="submit" class="btn btn-primary" [disabled]="userForm.invalid">Registrar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Editar Usuario -->
+<div class="modal-backdrop" *ngIf="showEditForm">
+  <div class="modal-content glass-card">
+    <button class="close-btn" (click)="showEditForm = false">&times;</button>
+    <h3>Editar Usuario</h3>
+    
+    <form [formGroup]="editForm" (ngSubmit)="onEditSubmit()">
+      <div class="input-group">
+        <label>Nombre</label>
+        <input type="text" formControlName="nombre">
+      </div>
+
+      <div class="input-group">
+        <label>Correo</label>
+        <input type="email" formControlName="correo">
+      </div>
+
+      <div class="input-group">
+        <label>Contraseña (Opcional)</label>
+        <input type="password" formControlName="contrasena" placeholder="Dejar en blanco para no cambiar">
+        <small class="text-muted" *ngIf="editForm.get('contrasena')?.hasError('pattern')">
+          La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número.
+        </small>
+      </div>
+
+      <div class="input-group" formGroupName="rol">
+        <label>Rol</label>
+        <select formControlName="idRol">
+          <option [value]="1">ADMINISTRADOR</option>
+          <option [value]="2">ALMACEN</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <label>Estado</label>
+        <select formControlName="estatus">
+          <option [value]="true">Activo</option>
+          <option [value]="false">Inactivo</option>
+        </select>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn btn-secondary" (click)="showEditForm = false">Cancelar</button>
+        <button type="submit" class="btn btn-primary" [disabled]="editForm.invalid">Guardar Cambios</button>
+      </div>
+    </form>
+  </div>
+</div>

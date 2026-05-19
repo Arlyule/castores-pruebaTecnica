@@ -1,0 +1,46 @@
+<h3>Registrar Movimiento de Inventario</h3>
+<p class="text-muted mb-4">Selecciona el producto y la cantidad a mover.</p>
+
+<div class="alert alert-danger mb-3" *ngIf="error">
+  ⚠️ {{ error }}
+</div>
+
+<form [formGroup]="movementForm" (ngSubmit)="onSubmit()">
+  <div class="input-group">
+    <label for="productId">Producto</label>
+    <select id="productId" formControlName="productId">
+      <option value="" disabled>Selecciona un producto</option>
+      <option *ngFor="let p of products" [value]="p.idProductos">
+        {{ p.nombreProducto }} (Stock actual: {{ p.stock || 0 }})
+      </option>
+    </select>
+  </div>
+
+  <div class="input-group mt-3">
+    <label for="cantidad">Cantidad</label>
+    <input id="cantidad" type="number" formControlName="cantidad" />
+  </div>
+
+  <div class="input-group mt-3">
+    <label>Tipo de Movimiento</label>
+    <div class="radio-group">
+      <label *ngIf="authService.hasRole('ADMINISTRADOR')" class="radio-label" [ngClass]="{'text-success': movementForm.get('tipoMovimiento')?.value === 'entrada'}">
+        <input type="radio" value="entrada" formControlName="tipoMovimiento" />
+        Entrada (Suma)
+      </label>
+      <label *ngIf="authService.hasRole('ALMACEN')" class="radio-label" [ngClass]="{'text-danger': movementForm.get('tipoMovimiento')?.value === 'salida'}">
+        <input type="radio" value="salida" formControlName="tipoMovimiento" />
+        Salida (Resta)
+      </label>
+    </div>
+  </div>
+
+  <div class="actions mt-4">
+    <button type="button" class="btn btn-outline" (click)="close.emit()">Cancelar</button>
+    <button type="submit" class="btn" 
+            [ngClass]="movementForm.get('tipoMovimiento')?.value === 'entrada' ? 'btn-success' : 'btn-danger'"
+            [disabled]="isSubmitting">
+      Registrar
+    </button>
+  </div>
+</form>

@@ -1,0 +1,67 @@
+<div class="header-actions">
+  <h2 class="title">Historial de Movimientos</h2>
+  
+  <div class="filter-controls">
+    <div class="filter-group">
+      <label for="dateFilter">Fecha:</label>
+      <input type="date" id="dateFilter" [(ngModel)]="selectedDate" (change)="onFilterChange()">
+    </div>
+
+    <div class="filter-group">
+      <label for="filter">Tipo:</label>
+      <select id="filter" [(ngModel)]="filterValue" (change)="onFilterChange()">
+        <option value="">Todos</option>
+        <option value="true">Entradas (+)</option>
+        <option value="false">Salidas (-)</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<div class="table-container glass-card mt-4 animate-fade-in">
+  <div *ngIf="isLoading" class="loading-state">Cargando historial...</div>
+  
+  <table *ngIf="!isLoading">
+    <thead>
+      <tr>
+        <th>Fecha y Hora</th>
+        <th>Tipo</th>
+        <th>Producto</th>
+        <th>Cantidad</th>
+        <th>Usuario (Rol)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let m of pagedMovements">
+        <td>
+          <div class="date-time">
+            <strong>{{ m.fechaRegistro | date:'dd/MM/yyyy' }}</strong>
+            <span class="time text-muted">{{ m.fechaRegistro | date:'HH:mm:ss' }}</span>
+          </div>
+        </td>
+        <td>
+          <span class="badge" [ngClass]="m.tipoMovimiento === true ? 'badge-success' : 'badge-warning'">
+            {{ m.tipoMovimiento === true ? 'Entrada' : 'Salida' }}
+          </span>
+        </td>
+        <td>{{ m.productos.nombreProducto }}</td>
+        <td>
+          <span [ngClass]="m.tipoMovimiento === true ? 'text-success' : 'text-warning'">
+            {{ m.tipoMovimiento === true ? '+' : '-' }}{{ m.cantidad }}
+          </span>
+        </td>
+        <td>{{ m.usuario.nombre }} <small class="text-muted">({{ m.usuario.rol.nombre }})</small></td>
+      </tr>
+      <tr *ngIf="movements.length === 0">
+        <td colspan="5" class="text-center">No hay movimientos registrados.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Pagination -->
+  <div class="pagination" *ngIf="totalPages > 1 && !isLoading">
+    <button (click)="prevPage()" [disabled]="currentPage === 1" class="btn btn-secondary">Anterior</button>
+    <span>Página {{currentPage}} de {{totalPages}}</span>
+    <button (click)="nextPage()" [disabled]="currentPage === totalPages" class="btn btn-secondary">Siguiente</button>
+  </div>
+</div>

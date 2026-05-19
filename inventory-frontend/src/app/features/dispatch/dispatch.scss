@@ -1,0 +1,56 @@
+.header-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  font-size: 1.5rem;
+  color: var(--primary-color);
+}
+
+.dispatch-card {
+  max-width: 600px;
+}
+
+.loading-state, .empty-state {
+  padding: 2rem;
+  color: var(--text-secondary);
+}
+
+.product-info-box {
+  background-color: rgba(79, 70, 229, 0.05);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  
+  h4 {
+    margin: 0 0 0.25rem 0;
+    color: var(--primary-color);
+  }
+  
+  p {
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .stock-info {
+    display: inline-block;
+    background-color: var(--bg-secondary);
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    border: 1px solid var(--border-color);
+  }
+}
+
+.success-alert {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: var(--success-color);
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  margin-top: 1rem;
+  text-align: center;
+}

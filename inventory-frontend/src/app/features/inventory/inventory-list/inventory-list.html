@@ -1,0 +1,58 @@
+<div class="header-actions mb-3">
+  <h2 class="title">Inventario de Productos</h2>
+</div>
+
+<div class="mb-4">
+  <button 
+    (click)="showMovementForm = true" 
+    class="btn btn-primary">
+    + Registrar Movimiento
+  </button>
+</div>
+
+<div class="table-container glass-card">
+  <div *ngIf="isLoading" class="loading-state">Cargando productos...</div>
+  
+  <table *ngIf="!isLoading">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th>Stock</th>
+        <th>Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let p of products" [class.inactive]="!p.estatus">
+        <td>{{ p.idProductos }}</td>
+        <td><strong>{{ p.nombreProducto }}</strong></td>
+        <td>{{ p.descripcion }}</td>
+        <td>
+          <span class="stock-badge" [ngClass]="{'low-stock': p.stock === 0, 'in-stock': (p.stock || 0) > 0}">
+            {{ p.stock }}
+          </span>
+        </td>
+        <td>
+          <span class="badge" [ngClass]="p.estatus ? 'badge-success' : 'badge-danger'">
+            {{ p.estatus ? 'Activo' : 'Inactivo' }}
+          </span>
+        </td>
+      </tr>
+      <tr *ngIf="products.length === 0">
+        <td colspan="5" class="text-center">No hay productos en el inventario.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal for Movement Form -->
+<div class="modal-backdrop" *ngIf="showMovementForm">
+  <div class="modal-content glass-card animate-fade-in">
+    <button class="close-btn" (click)="showMovementForm = false">×</button>
+    
+    <app-movement-form 
+      (close)="showMovementForm = false; loadProducts()">
+    </app-movement-form>
+  </div>
+</div>

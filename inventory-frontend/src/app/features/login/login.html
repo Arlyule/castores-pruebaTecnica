@@ -1,0 +1,54 @@
+<div class="login-container animate-fade-in">
+  <div class="login-card glass-card">
+    <div class="login-header">
+      <h1>Inventario Web</h1>
+      <p>Inicia sesión para continuar</p>
+    </div>
+
+    <div class="error-alert" *ngIf="error" style="margin-bottom: 1rem;">
+      {{ error }}
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="input-group">
+        <label for="correo">Correo Electrónico</label>
+        <input 
+          id="correo" 
+          type="email" 
+          formControlName="correo" 
+          placeholder="ejemplo@correo.com"
+          autocomplete="email"
+        />
+        <div class="error-msg" *ngIf="loginForm.get('correo')?.touched && loginForm.get('correo')?.errors?.['required']">
+          El correo es requerido
+        </div>
+        <div class="error-msg" *ngIf="loginForm.get('correo')?.touched && loginForm.get('correo')?.errors?.['email']">
+          Ingresa un correo válido
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label for="contrasena">Contraseña</label>
+        <input 
+          id="contrasena" 
+          type="password" 
+          formControlName="contrasena" 
+          placeholder="********"
+          autocomplete="current-password"
+        />
+        <div class="error-msg" *ngIf="loginForm.get('contrasena')?.touched && loginForm.get('contrasena')?.errors?.['required']">
+          La contraseña es requerida
+        </div>
+      </div>
+
+      <button 
+        type="submit" 
+        class="btn btn-primary w-full mt-4" 
+        [disabled]="isLoading">
+        <span *ngIf="isLoading">Cargando...</span>
+        <span *ngIf="!isLoading">Ingresar</span>
+      </button>
+    </form>
+    
+  </div>
+</div>

@@ -1,0 +1,103 @@
+<div class="products-container">
+  <div class="mb-3">
+    <h2 class="title">Catálogo de Productos</h2>
+  </div>
+
+  <div class="action-bar" style="margin-bottom: 20px !important;">
+    <button 
+      *ngIf="authService.hasRole('Administrador')" 
+      (click)="showAddForm = true" 
+      class="btn btn-primary">
+      + Registrar Producto
+    </button>
+  </div>
+
+  <div class="table-container glass-card">
+    <div *ngIf="isLoading" class="loading-state">Cargando productos...</div>
+    
+    <table *ngIf="!isLoading">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Descripción</th>
+          <th>Precio</th>
+          <th>Estado</th>
+          <th *ngIf="authService.hasRole('Administrador')">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of products" [class.inactive]="!p.estatus">
+          <td>{{ p.idProductos }}</td>
+          <td><strong>{{ p.nombreProducto }}</strong></td>
+          <td>{{ p.descripcion }}</td>
+          <td>{{ p.precio | currency }}</td>
+          <td>
+            <span class="badge" [ngClass]="p.estatus ? 'badge-success' : 'badge-danger'">
+              {{ p.estatus ? 'Activo' : 'Inactivo' }}
+            </span>
+          </td>
+          <td *ngIf="authService.hasRole('Administrador')">
+            <button (click)="openEditModal(p)" class="btn btn-sm btn-outline">
+              Editar
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="products.length === 0">
+          <td colspan="6" class="text-center">No hay productos registrados.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Modal for Adding Product -->
+  <div class="modal-backdrop" *ngIf="showAddForm">
+    <div class="modal-content glass-card animate-fade-in">
+      <button class="close-btn" (click)="showAddForm = false">×</button>
+      
+      <app-inventory-form 
+        (close)="showAddForm = false; loadProducts()">
+      </app-inventory-form>
+    </div>
+  </div>
+
+  <!-- Modal for Editing Product -->
+  <div class="modal-backdrop" *ngIf="showEditForm">
+    <div class="modal-content glass-card animate-fade-in">
+      <button class="close-btn" (click)="showEditForm = false">×</button>
+      
+      <h3>Editar Producto</h3>
+      <p class="text-muted mb-4">Modifica los datos del producto.</p>
+      
+      <form [formGroup]="editForm" (ngSubmit)="onEditSubmit()">
+        <div class="input-group">
+          <label for="editNombre">Nombre</label>
+          <input id="editNombre" type="text" formControlName="nombreProducto" />
+        </div>
+        
+        <div class="input-group mt-3">
+          <label for="editDesc">Descripción</label>
+          <input id="editDesc" type="text" formControlName="descripcion" />
+        </div>
+        
+        <div class="input-group mt-3">
+          <label for="editPrecio">Precio</label>
+          <input id="editPrecio" type="number" formControlName="precio" />
+        </div>
+        
+        <div class="input-group mt-3">
+          <label for="editEstatus">Estado</label>
+          <select id="editEstatus" formControlName="estatus">
+            <option [value]="true">Activo</option>
+            <option [value]="false">Inactivo</option>
+          </select>
+        </div>
+        
+        <div class="actions mt-4">
+          <button type="button" class="btn btn-outline" (click)="showEditForm = false">Cancelar</button>
+          <button type="submit" class="btn btn-primary" [disabled]="editForm.invalid">Guardar Cambios</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

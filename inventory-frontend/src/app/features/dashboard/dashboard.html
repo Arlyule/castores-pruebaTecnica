@@ -1,0 +1,53 @@
+<div class="dashboard-layout">
+  <aside class="sidebar glass-card">
+    <div class="brand">
+      <h2>Inventario</h2>
+      <div class="user-info">
+        <span class="user-name">{{ currentUser?.nombre }}</span>
+        <span class="badge" [ngClass]="currentUser?.rol?.nombre?.toUpperCase() === 'ADMINISTRADOR' ? 'badge-danger' : 'badge-success'">
+          {{ currentUser?.rol?.nombre }}
+        </span>
+      </div>
+    </div>
+
+    <nav class="nav-menu">
+      <!-- Visibles para todos -->
+      <a routerLink="/dashboard/inventory" routerLinkActive="active" class="nav-item">
+        📦 Inventario
+      </a>
+      
+      <a *ngIf="!authService.hasRole('ALMACEN')" routerLink="/dashboard/products" routerLinkActive="active" class="nav-item">
+        🏷️ Productos
+      </a>
+      
+
+
+      <!-- Sólo Admin -->
+      <a *ngIf="authService.hasRole('Administrador')" routerLink="/dashboard/history" routerLinkActive="active" class="nav-item">
+        📋 Historial
+      </a>
+
+      <a *ngIf="authService.hasRole('Administrador')" routerLink="/dashboard/users" routerLinkActive="active" class="nav-item">
+        👥 Usuarios
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button (click)="logout()" class="btn btn-outline w-full">
+        Cerrar Sesión
+      </button>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <header class="top-header glass-card">
+      <div class="breadcrumb">
+        Panel de Control
+      </div>
+    </header>
+    
+    <div class="content-area animate-fade-in">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>

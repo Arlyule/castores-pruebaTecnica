@@ -1,0 +1,61 @@
+<div class="dispatch-container">
+  <div class="header-actions">
+    <h2 class="title">Salida de Productos</h2>
+  </div>
+
+  <div class="dispatch-card glass-card mt-4 animate-fade-in">
+    <div *ngIf="isLoading" class="loading-state">Cargando productos disponibles...</div>
+    
+    <div *ngIf="!isLoading && activeProducts.length === 0" class="empty-state text-center">
+      <p>No hay productos activos disponibles para registrar salida.</p>
+    </div>
+
+    <form *ngIf="!isLoading && activeProducts.length > 0" [formGroup]="dispatchForm" (ngSubmit)="onSubmit()">
+      
+      <div class="input-group">
+        <label for="productId">Seleccionar Producto</label>
+        <select id="productId" formControlName="productId">
+          <option value="" disabled selected>-- Elige un producto --</option>
+          <option *ngFor="let p of activeProducts" [value]="p.idProductos">
+            {{ p.nombreProducto }} (Stock: {{ p.stock }})
+          </option>
+        </select>
+      </div>
+
+      <div *ngIf="selectedProduct" class="product-info-box">
+        <h4>{{ selectedProduct.nombreProducto }}</h4>
+        <p>{{ selectedProduct.descripcion }}</p>
+        <div class="stock-info">
+          <span>Stock Actual: <strong>{{ selectedProduct.stock }}</strong></span>
+        </div>
+      </div>
+
+      <div class="input-group" *ngIf="selectedProduct">
+        <label for="quantity">Cantidad a Extraer</label>
+        <input id="quantity" type="number" formControlName="quantity" min="1" [max]="selectedProduct?.stock || 0" />
+        
+        <div class="error-msg" *ngIf="dispatchForm.get('quantity')?.touched && dispatchForm.get('quantity')?.errors?.['min']">
+          La cantidad debe ser mayor a 0.
+        </div>
+      </div>
+
+      <div class="error-alert" *ngIf="error">
+        {{ error }}
+      </div>
+
+      <div class="success-alert" *ngIf="success">
+        {{ success }}
+      </div>
+
+      <button 
+        *ngIf="selectedProduct"
+        type="submit" 
+        class="btn btn-primary mt-4" 
+        [disabled]="isSubmitting || dispatchForm.invalid || (dispatchForm.value.quantity > (selectedProduct?.stock || 0))">
+        <span *ngIf="isSubmitting">Procesando...</span>
+        <span *ngIf="!isSubmitting">Confirmar Salida</span>
+      </button>
+
+    </form>
+  </div>
+</div>
