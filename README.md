@@ -43,6 +43,14 @@ Este proyecto es una prueba técnica que consiste en un sistema de gestión de i
     ```
 4.  El frontend estará disponible en `http://localhost:4200`.
 
+### Comando rápido (Windows)
+
+Puedes correr ambos proyectos al mismo tiempo con el siguiente comando desde la raíz del proyecto:
+
+```bash
+start cmd /k "cd Castores_prueba && .\mvnw.cmd spring-boot:run" & cd inventory-frontend && npm start
+```
+
 ## Poblado de datos (SQL)
 
 ### Roles y Usuarios
